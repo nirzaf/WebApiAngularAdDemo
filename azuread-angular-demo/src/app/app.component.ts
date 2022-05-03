@@ -12,6 +12,7 @@ import { AzureAdDemoService } from './azure-ad-demo.service';
 })
 export class AppComponent implements OnInit,OnDestroy {
   isUserLoggedIn:boolean=false;
+  userName?:string='';
   private readonly _destroy=new Subject<void>();
   constructor(@Inject(MSAL_GUARD_CONFIG) private msalGuardConfig:MsalGuardConfiguration,
   private msalBroadCastService:MsalBroadcastService,
@@ -26,7 +27,12 @@ export class AppComponent implements OnInit,OnDestroy {
     takeUntil(this._destroy))
     .subscribe(x=>
       {
-        this.isUserLoggedIn=this.authService.instance.getAllAccounts().length>0
+        this.isUserLoggedIn=this.authService.instance.getAllAccounts().length>0;
+      
+        if(this.isUserLoggedIn)
+        {
+          this.userName = this.authService.instance.getAllAccounts()[0].name;
+        }
         this.azureAdDemoSerice.isUserLoggedIn.next(this.isUserLoggedIn);
       })
   }
